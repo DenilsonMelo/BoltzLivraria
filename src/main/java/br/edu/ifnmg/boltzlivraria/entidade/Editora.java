@@ -15,6 +15,8 @@ public class Editora {
     private String cnpj;
     private String email;
     private String telefone;
+    
+    public Editora(){}
 
     public Editora(int codigoEditora, String razaoSocial, String cnpj, String email, String telefone) {
         this.codigoEditora = codigoEditora;
@@ -55,6 +57,15 @@ public class Editora {
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
+
+    public int getCodigoEditora() {
+        return codigoEditora;
+    }
+
+    public void setCodigoEditora(int codigoEditora) {
+        this.codigoEditora = codigoEditora;
+    }
+    
 
     @Override
     public String toString() {

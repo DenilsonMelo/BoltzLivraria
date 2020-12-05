@@ -15,6 +15,8 @@ public class Autor {
     private String primeiroSobrenome;
     private String ultimoSobrenome;
     
+    public Autor(){}
+    
     public Autor(int codigoAutor, String nome, String primeiroSobrenome, String ultimoSobrenome) {
         this.codigoAutor = codigoAutor;
         this.nome = nome;

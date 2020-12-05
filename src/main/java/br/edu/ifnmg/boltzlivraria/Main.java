@@ -121,11 +121,11 @@ public class Main {
             operacao = scanner.nextInt();
             
             if(operacao == 1){
-//                cadastrarLivros();
+                cadastrarLivro();
             }else if(operacao == 2){
-                //
+                cadastrarAutor();
             }else if(operacao ==  3){
-                //
+                cadastrarEditora();
             }
         }while(operacao != 4);
     }
@@ -151,24 +151,102 @@ public class Main {
     }
     
     public static void consultarLivros(){
-        System.out.println("\n\n%%%%%%%%%%%%%%%BOLTZ LIVRARIA%%%%%%%%%%%%%%%");
         listaLivros.forEach(livro -> {
             System.out.println(livro);
         });
     }
     
     public static void consultarAutores(){
-        System.out.println("\n\n%%%%%%%%%%%%%%%BOLTZ LIVRARIA%%%%%%%%%%%%%%%");
         listaAutores.forEach(autor -> {
             System.out.println(autor.getCodigoAutor() + " | " + autor.gerarReferencia());
         });
     }
     
     public static void consultarEditoras(){
-        System.out.println("\n\n%%%%%%%%%%%%%%%BOLTZ LIVRARIA%%%%%%%%%%%%%%%");
         listaEditoras.forEach(editora -> {
             System.out.println(editora);
         });
     }
 
+    public static void cadastrarLivro(){
+        System.out.println("\n\n%%%%%%%%%%%%%%%BOLTZ LIVRARIA%%%%%%%%%%%%%%%");
+        
+        Livro livro = new Livro();
+        Scanner scanner = new Scanner(System.in);
+        
+        livro.setCodigoLivro(listaLivros.size()+1);
+        
+        System.out.println("Qual o titulo? ");
+        livro.setTitulo(scanner.nextLine());        
+        System.out.println("Qual o ano de publicação? ");
+        livro.setAnoPublicacao(scanner.nextLine());
+        
+        System.out.println("Lista de autores cadastrados: ");
+        consultarAutores();
+        System.out.println("Qual o código do autor? ");
+        int codigoAutor = scanner.nextInt();
+        livro.setAutor(listaAutores.get((codigoAutor)-1));
+        
+        System.out.println("Lista de editoras cadastradas: ");
+        consultarEditoras();
+        System.out.println("Qual o código da editora? ");
+        int codigoEditora = scanner.nextInt();
+        livro.setEditora(listaEditoras.get((codigoEditora)-1));
+        
+        System.out.println("Qual a categoria? ");
+        livro.setCategoria(scanner.next());
+        System.out.println("Qual o ISBN? ");
+        livro.setIsbn(scanner.next());
+        System.out.println("Qual o valor? ");
+        livro.setPreco(scanner.nextDouble());
+        System.out.println("Qual a quantidade? ");
+        livro.setQuantidade(scanner.nextInt());
+                
+        listaLivros.add(livro);
+        
+        System.out.println("\nLivro cadastrado com sucesso!");
+
+    }
+    
+    public static void cadastrarAutor(){
+        System.out.println("\n\n%%%%%%%%%%%%%%%BOLTZ LIVRARIA%%%%%%%%%%%%%%%");
+        
+        Autor autor = new Autor();
+        Scanner scanner = new Scanner(System.in);
+        
+        autor.setCodigoAutor(listaAutores.size()+1);
+        
+        System.out.println("Qual o nome? ");
+        autor.setNome(scanner.nextLine());
+        System.out.println("Qual o primeiro sobrenome? ");
+        autor.setPrimeiroSobrenome(scanner.nextLine());
+        System.out.println("Qual o ultimo sobrenome? ");
+        autor.setUltimoSobrenome(scanner.nextLine());
+        
+        listaAutores.add(autor);
+        
+        System.out.println("\nAutor cadastrado com sucesso!");
+    }
+    
+    public static void cadastrarEditora(){
+        System.out.println("\n\n%%%%%%%%%%%%%%%BOLTZ LIVRARIA%%%%%%%%%%%%%%%");
+        
+        Editora editora = new Editora();
+        Scanner scanner = new Scanner(System.in);
+        
+        editora.setCodigoEditora(listaEditoras.size()+1);
+        
+        System.out.println("Qual a razão social? ");
+        editora.setRazaoSocial(scanner.nextLine());
+        System.out.println("Qual o CNPJ? ");
+        editora.setCnpj(scanner.nextLine());
+        System.out.println("Qual o email de contato? ");
+        editora.setEmail(scanner.nextLine());
+        System.out.println("Qual o telefone? ");
+        editora.setTelefone(scanner.nextLine());
+        
+        listaEditoras.add(editora);
+        
+        System.out.println("\nEditora cadastrada com sucesso!");
+    }
 }
