@@ -1,0 +1,24 @@
+br/edu/ifnmg/boltzlivraria/entidade/Pessoa.java
+ br.edu.ifnmg.boltzlivraria.entidade.Pessoa
+br/edu/ifnmg/boltzlivraria/entidade/Autor.java
+ br.edu.ifnmg.boltzlivraria.entidade.Autor
+br/edu/ifnmg/boltzlivraria/entidade/Cliente.java
+ br.edu.ifnmg.boltzlivraria.entidade.Cliente
+br/edu/ifnmg/boltzlivraria/entidade/Livro.java
+ br.edu.ifnmg.boltzlivraria.entidade.Livro
+br/edu/ifnmg/boltzlivraria/entidade/Editora.java
+ br.edu.ifnmg.boltzlivraria.entidade.Editora
+br/edu/ifnmg/boltzlivraria/entidade/ItensCompra.java
+ br.edu.ifnmg.boltzlivraria.entidade.ItensCompra
+br/edu/ifnmg/boltzlivraria/entidade/Funcionario.java
+ br.edu.ifnmg.boltzlivraria.entidade.Funcionario
+br/edu/ifnmg/boltzlivraria/entidade/ItensVenda.java
+ br.edu.ifnmg.boltzlivraria.entidade.ItensVenda
+br/edu/ifnmg/boltzlivraria/entidade/Compra.java
+ br.edu.ifnmg.boltzlivraria.entidade.Compra
+br/edu/ifnmg/boltzlivraria/entidade/Venda.java
+ br.edu.ifnmg.boltzlivraria.entidade.Venda
+br/edu/ifnmg/boltzlivraria/entidade/Transacao.java
+ br.edu.ifnmg.boltzlivraria.entidade.Transacao
+br/edu/ifnmg/boltzlivraria/Main.java
+ br.edu.ifnmg.boltzlivraria.Main

@@ -6,16 +6,18 @@
 package br.edu.ifnmg.boltzlivraria;
 
 import br.edu.ifnmg.boltzlivraria.entidade.Autor;
+import br.edu.ifnmg.boltzlivraria.entidade.Cliente;
 import br.edu.ifnmg.boltzlivraria.entidade.Editora;
+import br.edu.ifnmg.boltzlivraria.entidade.Funcionario;
+import br.edu.ifnmg.boltzlivraria.entidade.ItensVenda;
 import br.edu.ifnmg.boltzlivraria.entidade.Livro;
+import br.edu.ifnmg.boltzlivraria.entidade.Transacao;
+import br.edu.ifnmg.boltzlivraria.entidade.Venda;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -27,10 +29,14 @@ public class Main {
     private static ArrayList<Autor> listaAutores = new ArrayList<>();
     private static ArrayList<Editora> listaEditoras = new ArrayList<>();
     private static ArrayList<Livro> listaLivros = new ArrayList<>();
+    private static ArrayList<Funcionario> listaFuncionarios = new ArrayList<>();
+    private static ArrayList<Cliente> listaClientes = new ArrayList<>();
+    private static ArrayList<Venda> listaVendas = new ArrayList<>();
+    private static ArrayList<Transacao> listaTransacao = new ArrayList<>();
     
     public static void main(String[] args) throws IOException {
         inicializarDados();     
-        menuLivraria();
+        autenticarFuncionario();
     }
     
     public static void inicializarDados(){
@@ -78,9 +84,25 @@ public class Main {
         listaLivros.add(livro3);
         listaLivros.add(livro4);
         listaLivros.add(livro5);
+        
+        //FUNCIONARIOS
+        Funcionario funcionario1 = new Funcionario("marta", "atram258");
+        Funcionario funcionario2 = new Funcionario("pedro", "ordep852");
+        
+        listaFuncionarios.add(funcionario1);
+        listaFuncionarios.add(funcionario2);
+        
+        //CLIENTES
+        GregorianCalendar data1 = new GregorianCalendar(2000, 2, 1);
+        Cliente cliente1 = new Cliente(data1);
+        GregorianCalendar data2 = new GregorianCalendar(1999, 5, 22);
+        Cliente cliente2 = new Cliente(data2);
+        
+        listaClientes.add(cliente1);
+        listaClientes.add(cliente2);
     }
      
-    public static void menuLivraria(){
+    public static void menuLivraria(Funcionario funcionario){
         Scanner scanner = new Scanner(System.in);
         int operacao = 0;
         do{
@@ -93,17 +115,17 @@ public class Main {
             operacao = scanner.nextInt();
             
             if(operacao == 1){
-               menuCadastros();
+                menuCadastros(funcionario);
             }else if(operacao == 2){
-                menuConsultas();
+                menuConsultas(funcionario);
             }else if(operacao ==  3){
-                //
+                efetuarVenda(funcionario);
             }
         }while(operacao != 4);
     
     }
     
-    public static void exibirMenuOpcoes(){
+    public static void exibirMenuOpcoes(Funcionario funcionario){
         System.out.println("\n\n%%%%%%%%%%%%%%%BOLTZ LIVRARIA%%%%%%%%%%%%%%%");
         System.out.println("%% 1 - Livros                             %%");
         System.out.println("%% 2 - Autores                            %%");          
@@ -113,11 +135,11 @@ public class Main {
         System.out.println("%% Informe a operação:                    %%");
     }
     
-    public static void menuCadastros(){
+    public static void menuCadastros(Funcionario funcionario){
         Scanner scanner = new Scanner(System.in);
         int operacao = 0;
         do{
-            exibirMenuOpcoes();
+            exibirMenuOpcoes(funcionario);
             operacao = scanner.nextInt();
             
             if(operacao == 1){
@@ -130,11 +152,11 @@ public class Main {
         }while(operacao != 4);
     }
     
-    public static void menuConsultas(){
+    public static void menuConsultas(Funcionario funcionario){
         Scanner scanner = new Scanner(System.in);
         int operacao = 0;
         do{
-            exibirMenuOpcoes();
+            exibirMenuOpcoes(funcionario);
             operacao = scanner.nextInt();
             
             if(operacao == 1){
@@ -144,7 +166,7 @@ public class Main {
             }else if(operacao ==  3){
                 consultarEditoras();
             }else if(operacao ==  4){
-                menuLivraria();
+                menuLivraria(funcionario);
             }
         }while(operacao != 0);
         
@@ -248,5 +270,114 @@ public class Main {
         listaEditoras.add(editora);
         
         System.out.println("\nEditora cadastrada com sucesso!");
+    }
+    
+    private static void autenticarFuncionario() {
+        Scanner scanner = new Scanner(System.in);        
+
+        Funcionario funcionarioPesquisado = null;
+        
+        do{        
+            System.out.println("\nDigite o login: ");
+            String loginPesquisado = scanner.next();      
+            System.out.println("Digite a senha: ");
+            String senhaPesquisada = scanner.next();
+            
+            for(Funcionario funcionario : listaFuncionarios){
+                if(funcionario.getLogin().equals(loginPesquisado)) {
+                    funcionarioPesquisado = funcionario;
+
+                    boolean autenticadoSucesso = funcionarioPesquisado.autenticar(senhaPesquisada);
+
+                    if(autenticadoSucesso){
+                        System.out.printf("\nAutenticado com sucesso!");
+                        menuLivraria(funcionarioPesquisado);
+                    }else{
+                        System.out.printf("\nNão autenticado! Senha incorreta.");
+                    }
+                }
+            }
+            
+            System.out.println("\nFuncionário não encontrado!");
+            
+        }while (funcionarioPesquisado == null);
+    }
+    
+    public static void efetuarVenda(Funcionario funcionario){
+        Scanner scanner = new Scanner(System.in);
+        
+        Venda venda = new Venda();
+        
+        int operacao = 1;
+        double preco = 0;
+        int quantidadeParcelas = 1;
+                        
+        System.out.println("\n\n%%%%%%%%%%%%%%%BOLTZ LIVRARIA%%%%%%%%%%%%%%%");
+
+        System.out.println("Informe o código cliente: ");
+        int codigoCliente = scanner.nextInt();
+        
+        while(operacao != 0){
+            ItensVenda itens = new ItensVenda();
+            System.out.println("Informe o código do livro: ");
+            int codigoLivro = scanner.nextInt();
+            
+            for(Livro livro : listaLivros){
+                if(livro.getCodigoLivro() == codigoLivro){
+                    preco = livro.getPreco();
+                }
+            }
+            
+            System.out.println("Informe a quantidade: ");
+            int quantidade = scanner.nextInt();
+            
+            itens.setIdVenda(venda.getCodigoVenda());
+            itens.setIdLivro(codigoLivro);
+            itens.setQuantidade(quantidade);
+            
+            System.out.println("Informe o metódo de pagamento: 1-DINHEIRO 2-CARTÃO");
+            int formaPagamento = scanner.nextInt();
+            
+
+            if(formaPagamento == 2){
+                do{
+                    System.out.println("Informe a quantidade de parcelas que deseja: ");
+                    quantidadeParcelas = scanner.nextInt();
+                    if(quantidadeParcelas < 0 || quantidadeParcelas > 12){
+                        System.err.println("Quantidade de parcelas inválida!");
+                    }else{
+                        venda.setQuantidadeParcelas(quantidadeParcelas);
+                    }  
+                }while(quantidadeParcelas < 0 || quantidadeParcelas > 12);
+            }
+   
+            venda.setIdCliente(codigoCliente);
+            venda.setIdFuncionario(funcionario.getCodigoFuncionario());
+            venda.setCodigoVenda(listaVendas.size()+1);
+            venda.setFormaPagamento(formaPagamento);
+            venda.setValor((venda.getValor() + preco) * quantidade);
+            venda.setCodigoTransacao(listaTransacao.size()+1);
+            venda.setData();
+
+            venda.add(itens);
+            
+            do{
+                System.out.println("Deseja adicionar outro livro? 0-NÃO 1-SIM");
+                operacao = scanner.nextInt();
+                if(operacao < 0 || operacao > 1){
+                    System.err.println("Comando inválido!");
+                }
+            }while(operacao > 2);
+            
+            System.out.println("Subtotal: "+ venda.getValor());
+            
+            listaLivros.get(codigoLivro-1).setQuantidade(listaLivros.get(codigoLivro-1).getQuantidade() - quantidade);
+            
+        }
+        
+        listaVendas.add(venda);
+        
+        System.out.println("Venda concluida com sucesso!");     
+        System.out.println("Total: "+ venda.getValor());
     }
 }

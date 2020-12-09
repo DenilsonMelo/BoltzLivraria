@@ -5,12 +5,22 @@
  */
 package br.edu.ifnmg.boltzlivraria.entidade;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  *
  * @author denilson
  */
 public class Cliente extends Pessoa{
-    private Date dataAniversario;
+    private Calendar dataAniversario;
+    
+    public Cliente(Calendar dataAniversario){
+        this.dataAniversario = dataAniversario;
+    }
+    
+    public int pegarMesAniversario(){        
+        return dataAniversario.get(Calendar.MONTH);
+    }
 }
