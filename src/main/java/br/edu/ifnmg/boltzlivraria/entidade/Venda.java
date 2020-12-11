@@ -8,6 +8,7 @@ package br.edu.ifnmg.boltzlivraria.entidade;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  *
@@ -25,8 +26,6 @@ public class Venda extends Transacao{
         this.itensVenda = new ArrayList<>();
         this.valor = 0;
     }
-    
-    
 
     public Venda(int idCliente, int idFuncionario, ItensVenda itens, double valor, Calendar dataVenda) {
         this.idCliente = idCliente;
@@ -72,5 +71,20 @@ public class Venda extends Transacao{
 
     public void setIdFuncionario(int idFuncionario) {
         this.idFuncionario = idFuncionario;
+    }
+    
+    public void verificarQuantidadeParcelas(Venda venda, int formaPagamento){
+        Scanner scanner = new Scanner(System.in);
+        if(formaPagamento == 2){
+            do{
+                System.out.println("Informe a quantidade de parcelas que deseja: ");
+                quantidadeParcelas = scanner.nextInt();
+                if(quantidadeParcelas < 0 || quantidadeParcelas > 12){
+                    System.err.println("Quantidade de parcelas inválida!");
+                }else{
+                    venda.setQuantidadeParcelas(quantidadeParcelas);
+                }  
+            }while(quantidadeParcelas < 0 || quantidadeParcelas > 12);
+        }
     }
 }

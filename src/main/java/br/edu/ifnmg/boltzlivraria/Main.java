@@ -7,8 +7,10 @@ package br.edu.ifnmg.boltzlivraria;
 
 import br.edu.ifnmg.boltzlivraria.entidade.Autor;
 import br.edu.ifnmg.boltzlivraria.entidade.Cliente;
+import br.edu.ifnmg.boltzlivraria.entidade.Compra;
 import br.edu.ifnmg.boltzlivraria.entidade.Editora;
 import br.edu.ifnmg.boltzlivraria.entidade.Funcionario;
+import br.edu.ifnmg.boltzlivraria.entidade.ItensCompra;
 import br.edu.ifnmg.boltzlivraria.entidade.ItensVenda;
 import br.edu.ifnmg.boltzlivraria.entidade.Livro;
 import br.edu.ifnmg.boltzlivraria.entidade.Transacao;
@@ -32,6 +34,7 @@ public class Main {
     private static ArrayList<Funcionario> listaFuncionarios = new ArrayList<>();
     private static ArrayList<Cliente> listaClientes = new ArrayList<>();
     private static ArrayList<Venda> listaVendas = new ArrayList<>();
+    private static ArrayList<Compra> listaCompras = new ArrayList<>();
     private static ArrayList<Transacao> listaTransacao = new ArrayList<>();
     
     public static void main(String[] args) throws IOException {
@@ -86,8 +89,8 @@ public class Main {
         listaLivros.add(livro5);
         
         //FUNCIONARIOS
-        Funcionario funcionario1 = new Funcionario("marta", "atram258");
-        Funcionario funcionario2 = new Funcionario("pedro", "ordep852");
+        Funcionario funcionario1 = new Funcionario("marta", "atram258", 3200);
+        Funcionario funcionario2 = new Funcionario("pedro", "ordep852", 3200);
         
         listaFuncionarios.add(funcionario1);
         listaFuncionarios.add(funcionario2);
@@ -109,8 +112,9 @@ public class Main {
             System.out.println("\n\n%%%%%%%%%%%%%%%BOLTZ LIVRARIA%%%%%%%%%%%%%%%");
             System.out.println("%% 1 - Cadastros                          %%");
             System.out.println("%% 2 - Consultas                          %%");
-            System.out.println("%% 3 - Efetuar venda                      %%");          
-            System.out.println("%% 4 - Sair                               %%");
+            System.out.println("%% 3 - Efetuar venda                      %%");
+            System.out.println("%% 4 - Efetuar compra                     %%");
+            System.out.println("%% 5 - Sair                               %%");
             System.out.println("%% Informe a operação:                    %%");
             operacao = scanner.nextInt();
             
@@ -120,8 +124,11 @@ public class Main {
                 menuConsultas(funcionario);
             }else if(operacao ==  3){
                 efetuarVenda(funcionario);
+            }else if(operacao == 4){
+                efetuarCompra();
             }
-        }while(operacao != 4);
+           
+        }while(operacao != 5);
     
     }
     
@@ -305,7 +312,6 @@ public class Main {
     
     public static void efetuarVenda(Funcionario funcionario){
         Scanner scanner = new Scanner(System.in);
-        
         Venda venda = new Venda();
         
         int operacao = 1;
@@ -330,34 +336,30 @@ public class Main {
             
             System.out.println("Informe a quantidade: ");
             int quantidade = scanner.nextInt();
-            
-            itens.setIdVenda(venda.getCodigoVenda());
-            itens.setIdLivro(codigoLivro);
-            itens.setQuantidade(quantidade);
-            
             System.out.println("Informe o metódo de pagamento: 1-DINHEIRO 2-CARTÃO");
             int formaPagamento = scanner.nextInt();
             
+            itens.setIdVenda(venda.getCodigoVenda());
+            itens.setIdLivro(codigoLivro);
+            itens.setQuantidade(quantidade);          
 
-            if(formaPagamento == 2){
-                do{
-                    System.out.println("Informe a quantidade de parcelas que deseja: ");
-                    quantidadeParcelas = scanner.nextInt();
-                    if(quantidadeParcelas < 0 || quantidadeParcelas > 12){
-                        System.err.println("Quantidade de parcelas inválida!");
-                    }else{
-                        venda.setQuantidadeParcelas(quantidadeParcelas);
-                    }  
-                }while(quantidadeParcelas < 0 || quantidadeParcelas > 12);
-            }
-   
+            venda.verificarQuantidadeParcelas(venda, formaPagamento);
             venda.setIdCliente(codigoCliente);
             venda.setIdFuncionario(funcionario.getCodigoFuncionario());
             venda.setCodigoVenda(listaVendas.size()+1);
             venda.setFormaPagamento(formaPagamento);
-            venda.setValor((venda.getValor() + preco) * quantidade);
-            venda.setCodigoTransacao(listaTransacao.size()+1);
             venda.setData();
+            venda.setCodigoTransacao(listaTransacao.size()+1);
+            
+            //Verificar se é o mes do aniversario para dar o desconto de 15%
+            if(listaClientes.get(codigoCliente - 1).pegarMesAniversario() == venda.getData().getMonth()+1){
+                venda.setValor(((venda.getValor() + preco) * quantidade) * 0.85);
+            }else{
+                venda.setValor((venda.getValor() + preco) * quantidade);
+            }
+            
+            //Comissão de 5% para o funcionario;
+            funcionario.setSalario(funcionario.getSalario() + (venda.getValor() * 0.05));
 
             venda.add(itens);
             
@@ -372,12 +374,72 @@ public class Main {
             System.out.println("Subtotal: "+ venda.getValor());
             
             listaLivros.get(codigoLivro-1).setQuantidade(listaLivros.get(codigoLivro-1).getQuantidade() - quantidade);
-            
         }
         
         listaVendas.add(venda);
+        listaTransacao.add(venda);
         
         System.out.println("Venda concluida com sucesso!");     
         System.out.println("Total: "+ venda.getValor());
+    }
+    
+    public static void efetuarCompra(){
+        Scanner scanner = new Scanner(System.in);
+        Compra compra = new Compra();
+        ItensCompra itens = new ItensCompra();
+        
+        int operacao = 1;
+        double preco = 0;
+                        
+        System.out.println("\n\n%%%%%%%%%%%%%%%BOLTZ LIVRARIA%%%%%%%%%%%%%%%");
+        System.out.println("Informe o código da editora que deseja comprar os livros: ");
+        int codigoEditora = scanner.nextInt();
+        
+        while(operacao != 0){
+            listaEditoras.get(codigoEditora-1);
+            
+            System.out.println("Informe o código do livro: ");
+            int codigoLivro = scanner.nextInt();
+            
+            for(Livro livro : listaLivros){
+                if(livro.getEditora().getCodigoEditora() == codigoEditora  && livro.getCodigoLivro() == codigoLivro){
+                    System.out.println("Livro encontrado");
+                    preco = livro.getPreco();
+                    
+                    System.out.println("Informe a quantidade desejada: ");
+                    int quantidade = scanner.nextInt();
+                    System.out.println("Informe o metódo de pagamento: 1-DINHEIRO 2-CARTÃO");
+                    int formaPagamento = scanner.nextInt();
+
+                    itens.setIdCompra(compra.getCodigoCompra());
+                    itens.setIdLivro(codigoLivro);
+                    itens.setQuantidade(quantidade); 
+
+                    compra.setValor((compra.getValor() + preco) * quantidade);
+                    compra.setCodigoCompra(listaCompras.size()+1);
+                    compra.setFormaPagamento(formaPagamento);
+                    compra.setData();
+                    compra.setCodigoTransacao(listaTransacao.size()+1);
+
+                    compra.add(itens);
+
+                    listaLivros.get(codigoLivro-1).setQuantidade(listaLivros.get(codigoLivro-1).getQuantidade() + quantidade);
+                }
+            }
+            
+            do{
+                System.out.println("Deseja adicionar outro livro? 0-NÃO 1-SIM");
+                operacao = scanner.nextInt();
+                if(operacao < 0 || operacao > 1){
+                    System.err.println("Comando inválido!");
+                }
+            }while(operacao > 2);
+        }
+        
+        listaCompras.add(compra);
+        listaTransacao.add(compra);
+        
+        System.out.println("Venda concluida com sucesso!");     
+        System.out.println("Total: "+ compra.getValor());
     }
 }

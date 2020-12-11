@@ -16,9 +16,10 @@ public class Funcionario extends Pessoa{
     private double salario;
     private double comissao;
     
-    public Funcionario(String login, String senha){
+    public Funcionario(String login, String senha, double salario){
         this.login = login;
         this.senha = senha;
+        this.salario = salario;
     }
 
     public Funcionario() {}
