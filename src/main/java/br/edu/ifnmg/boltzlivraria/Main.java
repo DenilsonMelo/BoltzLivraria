@@ -126,9 +126,12 @@ public class Main {
                 efetuarVenda(funcionario);
             }else if(operacao == 4){
                 efetuarCompra();
+            }else if(operacao == 5){
+                System.out.println("Finalizando...");
+                System.exit(0);
             }
            
-        }while(operacao != 5);
+        }while(true);
     
     }
     
@@ -138,7 +141,6 @@ public class Main {
         System.out.println("%% 2 - Autores                            %%");          
         System.out.println("%% 3 - Editoras                           %%");
         System.out.println("%% 4 - Voltar para o menu                 %%");
-        System.out.println("%% 0 - Sair                               %%");
         System.out.println("%% Informe a operação:                    %%");
     }
     
@@ -424,16 +426,16 @@ public class Main {
                     compra.add(itens);
 
                     listaLivros.get(codigoLivro-1).setQuantidade(listaLivros.get(codigoLivro-1).getQuantidade() + quantidade);
+                    
+                    do{
+                        System.out.println("Deseja adicionar outro livro? 0-NÃO 1-SIM");
+                        operacao = scanner.nextInt();
+                        if(operacao < 0 || operacao > 1){
+                            System.err.println("Comando inválido!");
+                        }
+                    }while(operacao > 2);
                 }
-            }
-            
-            do{
-                System.out.println("Deseja adicionar outro livro? 0-NÃO 1-SIM");
-                operacao = scanner.nextInt();
-                if(operacao < 0 || operacao > 1){
-                    System.err.println("Comando inválido!");
-                }
-            }while(operacao > 2);
+            }     
         }
         
         listaCompras.add(compra);
